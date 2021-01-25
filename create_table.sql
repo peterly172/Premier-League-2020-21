@@ -50,8 +50,8 @@ gameweek_id INT,
 venue_id INT, 
 hometeam_id INT, 
 awayteam_id INT, 
-hometeam_goal INT, 
-awayteam_goal INT 
+hometeam_goal NUMERIC, 
+awayteam_goal NUMERIC 
 
 ); 
 
