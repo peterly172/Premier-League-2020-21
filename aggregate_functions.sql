@@ -51,24 +51,22 @@ GROUP BY player
 ORDER BY yellow_cards DESC
 
 --Number of goals scored by defenders
-SELECT p.name AS player, COUNT(*) AS yellow_cards
-FROM cards c
-JOIN players p
-ON c.player_id = p.id
-WHERE c.team_id = 19
-AND card_id = 1
-GROUP BY player
-ORDER BY yellow_cards DESC
+SELECT p.name AS player, COUNT(*)
+FROM goals g
+JOIN players p ON g.player_id = p.id
+WHERE position_id = 2
+GROUP BY p.name
+ORDER BY goals DESC
 
 --Number of strikers getting red cards
-SELECT p.name AS player, COUNT(*) AS yellow_cards
+SELECT p.name AS player, COUNT(*) AS red_cards
 FROM cards c
 JOIN players p
 ON c.player_id = p.id
-WHERE c.team_id = 19
-AND card_id = 1
-GROUP BY player
-ORDER BY yellow_cards DESC
+WHERE position_id = 4
+AND card_id = 2
+GROUP BY p.name
+ORDER BY red_cards DESC
 
 --Total Number of goals scored in the each half
 SELECT g.goal_half, COUNT(*) AS goals
@@ -179,19 +177,3 @@ ON g.player_id = p.id
 GROUP BY p.name
 ORDER BY MIN(goal_time)
 LIMIT 1
-
-UNION
---Displaying all matches and venues
-SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
-FROM match
-UNION 
-SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
-FROM scores
-ORDER BY gameweek_id, venue_id
- 
-SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
-FROM match
-UNION ALL
-SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
-FROM scores
-ORDER BY gameweek_id, venue_id
