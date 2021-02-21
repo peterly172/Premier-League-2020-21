@@ -38,14 +38,11 @@ OR scores.awayteam_id = 9
 ORDER BY(hometeam_goal + awayteam_goal) DESC
 
 --Assessing Running total of goals and AVG from Leicester when they are home
-SELECT m.date, scores.venue_id, scores.hometeam_goal, scores.awayteam_goal,
-CASE WHEN scores.hometeam_id = 10 THEN 'home' ELSE 'away' END AS Leicester,
-AVG(hometeam_goal) OVER(PARTITION BY scores.venue_id) AS homeavg,
-AVG(awayteam_goal) OVER(PARTITION BY scores.venue_id) AS awayavg
-FROM scores
-JOIN match m ON scores.match_id = m.id
-JOIN gameweek g ON scores.gameweek_id = g.id
-WHERE scores.hometeam_id = 10
-OR scores.awayteam_id = 10
-ORDER BY(hometeam_goal + awayteam_goal) DESC
-
+SELECT t.name AS team, gameweek.name, COUNT(*) AS goals,
+SUM(COUNT(*)) OVER(ORDER BY match_id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total 
+FROM goals g
+JOIN teams t ON g.team_id = t.id
+JOIN match m ON g.match_id = m.id
+JOIN gameweek ON m.gameweek_id = gameweek.id
+WHERE team_id = 10
+GROUP BY match_id, gameweek.name, t.name
