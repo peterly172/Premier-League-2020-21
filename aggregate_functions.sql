@@ -82,7 +82,7 @@ FROM cards c
 WHERE card_time BETWEEN 1 AND 45
 
 SUM
--- Number of goals scored at the PL restart
+-- Number of goals scored so far in the Premier League
 SELECT SUM(hometeam_goal + awayteam_goal)
 FROM scores
 
@@ -130,7 +130,7 @@ SELECT MAX(hometeam_goal + awayteam_goal) FROM scores
 SELECT gameweek.name, MAX(hometeam_goal + awayteam_goal) AS max_goals
 FROM scores
 JOIN gameweek 
-ON scores.venue_id = gameweek.id
+ON scores.gameweek_id = gameweek.id
 GROUP BY gameweek.name
 ORDER BY max_goals DESC, gameweek.name
 
@@ -170,10 +170,26 @@ ORDER BY MIN(card_time)
 LIMIT 1
 
 --Latest time card given this season
-SELECT p.name, MIN(goal_time)
-FROM goals g
+SELECT p.name, MAX(card_time)
+FROM cards c
 JOIN players p
-ON g.player_id = p.id
+ON c.player_id = p.id
 GROUP BY p.name
-ORDER BY MIN(goal_time)
+ORDER BY MAX(card_time) DESC
 LIMIT 1
+
+UNION
+--Displaying all matches and venues
+SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
+FROM match
+UNION 
+SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
+FROM scores
+ORDER BY gameweek_id, venue_id
+ 
+SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
+FROM match
+UNION ALL
+SELECT gameweek_id, venue_id, hometeam_id, awayteam_id
+FROM scores
+ORDER BY gameweek_id, venue_id
