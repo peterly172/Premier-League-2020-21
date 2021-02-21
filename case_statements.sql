@@ -16,7 +16,7 @@ ON s.awayteam_id = t.id
 WHERE hometeam_id = 4
 
 --Identify when Wolves won a match during the season
-SELECT m.date, s.name, v.name, 
+SELECT m.date, g.name, v.name, 
 CASE WHEN scores.hometeam_id = 20 AND hometeam_goal > awayteam_goal THEN 'Wolves win'
 WHEN scores.awayteam_id = 20 AND awayteam_goal > hometeam_goal THEN 'Wolves win'
 END AS outcome
@@ -40,16 +40,16 @@ SUM(CASE WHEN gameweek_id = 7 AND hometeam_goal > awayteam_goal THEN 1 ELSE 0 EN
 FROM scores 
 JOIN gameweek g
 ON scores.gameweek_id = g.id
-WHERE gameweek BETWEEN 1 AND 7
-GROUP BY s.name
+WHERE gameweek_id BETWEEN 1 AND 7
+GROUP BY g.name
 
 --Count the Team1, Team2 and Draws in each Stadium
 SELECT v.name AS venue,
-COUNT(CASE WHEN hometeam_goal > awayteam_goal THEN s.id END) AS home_wins,
-COUNT(CASE WHEN hometeam_goal < awayteam_goal THEN s.id END) AS away_wins,
-COUNT(CASE WHEN hometeam_goal = awayteam_goal THEN s.id END) AS Draw
+COUNT(CASE WHEN hometeam_goal > awayteam_goal THEN s.match_id END) AS home_wins,
+COUNT(CASE WHEN hometeam_goal < awayteam_goal THEN s.match_id END) AS away_wins,
+COUNT(CASE WHEN hometeam_goal = awayteam_goal THEN s.match_id END) AS Draw
 FROM scores s
 JOIN venues v
 ON s.venue_id = v.id
-GROUP BY venue
+GROUP BY v.name
 ORDER BY home_wins DESC
