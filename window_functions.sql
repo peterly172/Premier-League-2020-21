@@ -5,6 +5,8 @@ FROM scores s
 JOIN venues v ON s.venue_id = v.id
 JOIN gameweek g ON s.gameweek_id = g.id
 
+
+
 --Venue ranking on Average goals
 SELECT v.name AS venue,
 ROUND(AVG(hometeam_goal + awayteam_goal), 2) AS avg_goals,
@@ -46,3 +48,4 @@ JOIN gameweek g ON scores.gameweek_id = g.id
 WHERE scores.hometeam_id = 10
 OR scores.awayteam_id = 10
 ORDER BY(hometeam_goal + awayteam_goal) DESC
+
